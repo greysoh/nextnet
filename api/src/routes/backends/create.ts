@@ -33,6 +33,7 @@ export function route(routeOptions: RouteOptions) {
             name: { type: "string" },
             description: { type: "string" },
             backend: { type: "string" },
+            connectionDetails: { type: "string" },
           },
         },
       },
@@ -43,7 +44,7 @@ export function route(routeOptions: RouteOptions) {
         token: string;
         name: string;
         description?: string;
-        connectionDetails: unknown;
+        connectionDetails: string;
         backend: string;
       } = req.body;
 
@@ -59,11 +60,9 @@ export function route(routeOptions: RouteOptions) {
         });
       }
 
-      const connectionDetails = JSON.stringify(body.connectionDetails);
-      const connectionDetailsValidityCheck =
-        backendProviders[body.backend].checkParametersBackendInstance(
-          connectionDetails,
-        );
+      const connectionDetailsValidityCheck = backendProviders[
+        body.backend
+      ].checkParametersBackendInstance(body.connectionDetails);
 
       if (!connectionDetailsValidityCheck.success) {
         return res.status(400).send({
@@ -79,7 +78,7 @@ export function route(routeOptions: RouteOptions) {
           description: body.description,
 
           backend: body.backend,
-          connectionDetails: JSON.stringify(body.connectionDetails),
+          connectionDetails: body.connectionDetails,
         },
       });
 
